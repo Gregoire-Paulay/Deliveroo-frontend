@@ -14,7 +14,7 @@ const App = () => {
       const response = await axios.get(
         "https://site--deliveroo-backend--hpyqm5px6d9r.code.run/"
       );
-      console.log(response.data);
+      // console.log(response.data);
       setData(response.data);
       setIsLoading(false);
     };
@@ -46,33 +46,35 @@ const App = () => {
               {data.categories.map((elem) => {
                 return (
                   <div key={elem.name}>
-                    <section>
-                      <h3>{elem.name}</h3>
-                      <div className="menu">
-                        {elem.meals
-                          ? elem.meals.map((meal) => {
-                              return (
-                                <div key={meal.id}>
-                                  <div>
-                                    <h4>{meal.title}</h4>
-                                    {meal.description ? (
-                                      <p>{meal.description}</p>
-                                    ) : (
-                                      ""
-                                    )}
-                                    <p className="price">{meal.price} €</p>
-                                  </div>
-                                  {meal.picture ? (
-                                    <img src={meal.picture} alt="Image plat" />
+                    {elem.meals.length !== 0 ? (
+                      <section>
+                        <h3>{elem.name}</h3>
+                        <div className="menu">
+                          {elem.meals.map((meal) => {
+                            return (
+                              <div key={meal.id}>
+                                <div>
+                                  <h4>{meal.title}</h4>
+                                  {meal.description ? (
+                                    <p>{meal.description}</p>
                                   ) : (
                                     ""
                                   )}
+                                  <p className="price">{meal.price} €</p>
                                 </div>
-                              );
-                            })
-                          : ""}
-                      </div>
-                    </section>
+                                {meal.picture ? (
+                                  <img src={meal.picture} alt="Image plat" />
+                                ) : (
+                                  ""
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </section>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 );
               })}
