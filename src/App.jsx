@@ -11,7 +11,6 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [cart, setCart] = useState([]);
   const [total, setTotal] = useState(0);
-  const [counter, setCounter] = useState([1]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,17 +29,20 @@ const App = () => {
 
   const handleClickAddCart = (meal) => {
     const finalCart = [...cart];
-    // condition pour ajout dans le panier, si il n'existe pas on push le nouvel objet dans le tableau, sinon on incrémente son compteur de 1
-    finalCart.push({ price: meal.price, title: meal.title });
+    finalCart.push({ price: meal.price, title: meal.title, counter: 1 });
     setCart(finalCart);
     setTotal(total + parseInt(meal.price));
+
+    // condition pour ajout dans le panier, si il n'existe pas on push le nouvel objet dans le tableau, sinon on incrémente son compteur de 1
   };
 
-  const handleClickCounter = (index, value, meal) => {
-    const counterCopy = [...counter];
-    counterCopy.splice(index, 1, value);
-    setCounter(counterCopy);
+  const handleClickCounterPlus = (meal, value) => {
+    meal.counter = value;
     setTotal(total + parseInt(meal.price));
+  };
+  const handleClickCounterMinus = (meal, value) => {
+    meal.counter = value;
+    setTotal(total - parseInt(meal.price));
   };
 
   return (
@@ -119,34 +121,26 @@ const App = () => {
 
               <div className="cart">
                 <button className="buy">Valider mon panier</button>
-
-                {/* On veut séparer les compteur, qu'il soit indépandant */}
                 {cart.map((elem, index) => {
                   return (
                     <div key={index}>
-                      {counter.map((count, index) => {
-                        return (
-                          <div key={index}>
-                            <button
-                              onClick={() =>
-                                handleClickCounter(index, count - 1, elem)
-                              }
-                            >
-                              -
-                            </button>
-                            <p>{counter}</p>
-                            <button
-                              onClick={() =>
-                                handleClickCounter(index, count + 1, elem)
-                              }
-                            >
-                              +
-                            </button>
-                            <span>{elem.title}</span>
-                            <span>{elem.price * counter}</span>
-                          </div>
-                        );
-                      })}
+                      <button
+                        onClick={() =>
+                          handleClickCounterMinus(elem, elem.counter - 1)
+                        }
+                      >
+                        -
+                      </button>
+                      <p>{elem.counter}</p>
+                      <button
+                        onClick={() =>
+                          handleClickCounterPlus(elem, elem.counter + 1)
+                        }
+                      >
+                        +
+                      </button>
+                      <span>{elem.title}</span>
+                      <span>{elem.price * elem.counter}</span>
                     </div>
                   );
                 })}

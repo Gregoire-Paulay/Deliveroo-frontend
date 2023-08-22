@@ -181,7 +181,7 @@ main > div {
   flex-direction: column;
 }
 
-.cart > div:first-of-type {
+.cart > div {
   display: flex;
   border: 1px solid yellow;
   align-items: flex-start;
