@@ -176,18 +176,23 @@ main > div {
   background-color: white;
   border-radius: 6px;
 }
-.cart > div > p {
-  display: flex;
-  flex-direction: column;
-}
 
-.cart > div {
+.my-cart {
   display: flex;
-  border: 1px solid yellow;
+  border: 5px solid yellow;
   align-items: flex-start;
+  justify-content: space-between;
+}
+.my-cart span:first-of-type {
+  margin-right: 0px;
+}
+.my-cart span:nth-of-type(2) {
+  width: 80px;
+  border: 2px solid black;
+  text-align: end;
 }
 
-.buy {
+.cart > div > button {
   background-color: var(--main-color);
   border: none;
   border-radius: 8px;

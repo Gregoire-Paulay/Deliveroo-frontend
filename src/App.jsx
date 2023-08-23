@@ -9,8 +9,9 @@ import Footer from "./components/Footer";
 const App = () => {
   const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(true);
+
+  //mon panier qui sera un tableau d'objets
   const [cart, setCart] = useState([]);
-  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,22 +29,42 @@ const App = () => {
   }, []);
 
   const handleClickAddCart = (meal) => {
-    const finalCart = [...cart];
-    finalCart.push({ price: meal.price, title: meal.title, counter: 1 });
-    setCart(finalCart);
-    setTotal(total + parseInt(meal.price));
-
     // condition pour ajout dans le panier, si il n'existe pas on push le nouvel objet dans le tableau, sinon on incrémente son compteur de 1
+    const finalCart = [...cart];
+    const mealInCart = finalCart.find((element) => element.id === meal.id);
+
+    if (mealInCart) {
+      mealInCart.quantity++;
+    } else {
+      const obj = { ...meal, quantity: 1 };
+      finalCart.push(obj);
+    }
+    setCart(finalCart);
   };
 
-  const handleClickCounterPlus = (meal, value) => {
-    meal.counter = value;
-    setTotal(total + parseInt(meal.price));
+  const handleClickCounterPlus = (meal) => {
+    const cartCopy = [...cart];
+    meal.quantity++;
+    setCart(cartCopy);
   };
-  const handleClickCounterMinus = (meal, value) => {
-    meal.counter = value;
-    setTotal(total - parseInt(meal.price));
+
+  const handleClickCounterMinus = (meal) => {
+    const cartCopy = [...cart];
+    const mealInCart = cartCopy.find((element) => element.id === meal.id);
+
+    if (mealInCart.quantity > 1) {
+      meal.quantity--;
+    } else {
+      const index = cartCopy.indexOf(mealInCart);
+      cartCopy.splice(index, 1);
+    }
+    setCart(cartCopy);
   };
+
+  let total = 0;
+  for (let i = 0; i < cart.length; i++) {
+    total += cart[i].price * cart[i].quantity;
+  }
 
   return (
     <div>
@@ -70,14 +91,14 @@ const App = () => {
           <main>
             <div className="container">
               <section className="col-left">
-                {data.categories.map((elem) => {
+                {data.categories.map((category) => {
                   return (
-                    <div key={elem.name}>
-                      {elem.meals.length !== 0 ? (
+                    <div key={category.name}>
+                      {category.meals.length !== 0 ? (
                         <section>
-                          <h2>{elem.name}</h2>
+                          <h2>{category.name}</h2>
                           <div className="menu">
-                            {elem.meals.map((meal) => {
+                            {category.meals.map((meal) => {
                               return (
                                 <article
                                   key={meal.id}
@@ -119,41 +140,40 @@ const App = () => {
                 })}
               </section>
 
-              <div className="cart">
-                <button className="buy">Valider mon panier</button>
-                {cart.map((elem, index) => {
-                  return (
-                    <div key={index}>
-                      <button
-                        onClick={() =>
-                          handleClickCounterMinus(elem, elem.counter - 1)
-                        }
-                      >
-                        -
-                      </button>
-                      <p>{elem.counter}</p>
-                      <button
-                        onClick={() =>
-                          handleClickCounterPlus(elem, elem.counter + 1)
-                        }
-                      >
-                        +
-                      </button>
-                      <span>{elem.title}</span>
-                      <span>{elem.price * elem.counter}</span>
-                    </div>
-                  );
-                })}
-
-                {total === 0 ? (
-                  <p>Votre panier est vide</p>
+              <section className="cart">
+                {cart.length === 0 ? (
+                  <div>
+                    <p>Validez votre panier</p>
+                    <p>Votre panier est vide</p>
+                  </div>
                 ) : (
-                  <div className="total">
-                    <p>Total</p>
-                    <p>{total} €</p>
+                  <div>
+                    <button>Valider mon panier</button>
+                    {cart.map((meal, index) => {
+                      return (
+                        <div key={meal.id} className="my-cart">
+                          <button onClick={() => handleClickCounterMinus(meal)}>
+                            -
+                          </button>
+                          <p>{meal.quantity}</p>
+                          <button onClick={() => handleClickCounterPlus(meal)}>
+                            +
+                          </button>
+                          <span>{meal.title}</span>
+                          <span>
+                            {(Number(meal.price) * meal.quantity).toFixed(2)} €
+                          </span>
+                        </div>
+                      );
+                    })}
+
+                    <div className="total">
+                      <p>Total</p>
+                      <p>{total.toFixed(2)} €</p>
+                    </div>
                   </div>
                 )}
-              </div>
+              </section>
             </div>
           </main>
         </div>
