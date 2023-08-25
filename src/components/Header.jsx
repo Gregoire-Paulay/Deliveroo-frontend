@@ -1,8 +1,11 @@
-const Header = (props) => {
+import logo from "../assets/logo.png";
+
+const Header = () => {
   return (
     <header>
-      <i className="fa-solid fa-hand-peace"></i>
-      <h1>{props.title}</h1>
+      <div className="container">
+        <img src={logo} alt="Logo deliveroo" />
+      </div>
     </header>
   );
 };
