@@ -13,6 +13,8 @@ const App = () => {
   //mon panier qui sera un tableau d'objets
   const [cart, setCart] = useState([]);
 
+  const shipping = 2.5;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -149,27 +151,46 @@ const App = () => {
                 ) : (
                   <div>
                     <button>Valider mon panier</button>
-                    {cart.map((meal, index) => {
-                      return (
-                        <div key={meal.id} className="my-cart">
-                          <button onClick={() => handleClickCounterMinus(meal)}>
-                            -
-                          </button>
-                          <p>{meal.quantity}</p>
-                          <button onClick={() => handleClickCounterPlus(meal)}>
-                            +
-                          </button>
-                          <span>{meal.title}</span>
-                          <span>
-                            {(Number(meal.price) * meal.quantity).toFixed(2)} €
-                          </span>
-                        </div>
-                      );
-                    })}
+                    <div>
+                      {cart.map((meal) => {
+                        return (
+                          <div key={meal.id} className="my-cart">
+                            <button
+                              onClick={() => handleClickCounterMinus(meal)}
+                            >
+                              <i className="fa-solid fa-minus"></i>
+                            </button>
+                            <p>{meal.quantity}</p>
+                            <button
+                              onClick={() => handleClickCounterPlus(meal)}
+                            >
+                              <i className="fa-solid fa-plus"></i>
+                            </button>
+                            <span>{meal.title}</span>
+                            <span>
+                              {(Number(meal.price) * meal.quantity).toFixed(2)}{" "}
+                              €
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
 
                     <div className="total">
-                      <p>Total</p>
-                      <p>{total.toFixed(2)} €</p>
+                      <div className="subTotal">
+                        <div>
+                          <p>Sous-total</p>
+                          <p> {total.toFixed(2)} €</p>
+                        </div>
+                        <div>
+                          <p>Frais de livraison</p>
+                          <p>{shipping} €</p>
+                        </div>
+                      </div>
+                      <div className="finalPrice">
+                        <p>Total</p>
+                        <p>{Number(total.toFixed(2)) + shipping} €</p>
+                      </div>
                     </div>
                   </div>
                 )}
